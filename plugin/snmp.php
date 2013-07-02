@@ -19,14 +19,16 @@ switch(GET('t')) {
 			'rx' => '0000ff',
 			'tx' => '00b000',
 		);
-		$obj->rrd_title = sprintf('Interface Traffic (%s)', $obj->args['tinstance']);
+		$obj->rrd_title = sprintf('Interface Traffic');
+		if (isset($obj->args['tinstance'])) $obj->rrd_title .= sprintf(' (%s)', $obj->args['tinstance']);
 		$obj->rrd_vertical = sprintf('%s per second', ucfirst($CONFIG['network_datasize']));
 		$obj->scale = $CONFIG['network_datasize'] == 'bits' ? 8 : 1;
 	break;
 	default:
 		require_once 'type/Default.class.php';
 		$obj = new Type_Default($CONFIG);
-		$obj->rrd_title = sprintf('SNMP: %s (%s)', $obj->args['type'], $obj->args['tinstance']);
+		$obj->rrd_title = sprintf('SNMP: %s', $obj->args['type']);
+		if (isset($obj->args['tinstance'])) $obj->rrd_title .= sprintf(' (%s)', $obj->args['tinstance']);
 	return;
 }
 
