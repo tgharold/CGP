@@ -56,7 +56,7 @@ function rrd_file_search(
 		case 'load':
 		case 'users':
 		case 'uptime':
-			$files = glob(printf('%s/%s/%s/%s.rrd',
+			$files = glob(sprintf('%s/%s/%s/%s.rrd',
 				$datadir,
 				$host, 
 				$plugin,
@@ -68,7 +68,7 @@ function rrd_file_search(
 		# Handles most other plugins
 		# /(datadir)/(host)/(plugin)[-(category)][-(pinstance)]/(type)[-tinstance]*.rrd
 		default:
-			$files = glob(printf('%s/%s/%s%s%s%s%s/%s%s%s%srrd',
+			$files = glob(sprintf('%s/%s/%s%s%s%s%s/%s%s%s%srrd',
 				$datadir,
 				$host, 
 				$plugin,
