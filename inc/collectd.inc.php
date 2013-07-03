@@ -54,7 +54,7 @@ function rrd_file_search(
 	));
 	
 	# check for trailing slash on $datadir, remove it if found
-	if (substr($datadir,strlen($datadir) == '/')) $datadir = substr($datadir, 1, strlen($datadir)-1);
+	if (substr($datadir,strlen($datadir) == '/')) $datadir = substr($datadir, 0, strlen($datadir)-1);
 	if ($CONFIG['debug']) error_log(sprintf('DEBUG: $datadir=[%s]', $datadir));
 		
 	# Optional arguments which are always found need to be set to wildcards
