@@ -146,7 +146,7 @@ function plugin_sort($data) {
 	return $data;
 }
 
-# generate graph url's for a plugin of a host
+# generate graph url's for a plugin of a host, outputs the HTML tags to display the graphs
 function graphs_from_plugin($host, $plugin, $overview=false) {
 	global $CONFIG;
 
