@@ -28,7 +28,40 @@ function collectd_plugindata($host, $plugin=NULL) {
 		return false;
 
 	chdir($CONFIG['datadir'].'/'.$host);
-	$files = glob("*/*.rrd");
+	
+	# by customizing the file search by plugin type, we can avoid searching directories
+	# which are not interesting to this instance of the function
+	switch ($plugin) {
+		
+		# plugins where the directory structure is /datadir/(host)/(plugin)
+		case 'ipmi':
+		case 'load':
+		case 'memory':
+		case 'ntpd':
+		case 'snmp':
+		case 'swap':
+		case 'uptime':
+		case 'users':
+		case 'vmem':
+			$files = glob(printf('%s/*.rrd'), $plugin);
+		
+		# plugins where the directory structure is /datadir/(host)/(plugin)-(pinstance)
+		case 'aggregation':
+		case 'bind':
+		case 'cpu':
+		case 'df':
+		case 'disk':
+		case 'interface':
+		case 'processes':
+		case 'sensors':
+		case 'tail':
+			$files = glob(printf('%s*/*.rrd'), $plugin);
+
+		# all other plugins search everything
+		default:
+			$files = glob("*/*.rrd");
+	}
+	
 	if (!$files)
 		return false;
 	
@@ -37,16 +70,20 @@ function collectd_plugindata($host, $plugin=NULL) {
 	$data = array();
 	foreach($files as $item) {
 		if ((strpos($item, 'snmp') !== FALSE) && ($CONFIG['debug'])) error_log(sprintf('DEBUG: $item=[%s]', $item));
-
-		preg_match('`
-			(?P<p>[\w_]+)      # plugin
-			(?:(?<=varnish)(?:\-(?P<c>[\w]+)))? # category
-			(?:\-(?P<pi>.+))?  # plugin instance
-			/
-			(?P<t>[\w_]+)      # type
-			(?:\-(?P<ti>.+))?  # type instance
-			\.rrd
-		`x', $item, $matches);
+		
+		switch ($plugin) {
+			
+			default:
+				preg_match('`
+					(?P<p>[\w_]+)      # plugin
+					(?:(?<=varnish)(?:\-(?P<c>[\w]+)))? # category
+					(?:\-(?P<pi>.+))?  # plugin instance
+					/
+					(?P<t>[\w_]+)      # type
+					(?:\-(?P<ti>.+))?  # type instance
+					\.rrd
+				`x', $item, $matches);
+		}
 
 		$data[] = array(
 			'p'  => $matches['p'],
