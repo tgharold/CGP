@@ -41,6 +41,17 @@ function rrd_file_search(
 		$pinstance = NULL, 
 		$tinstance = NULL
 	) {
+	global $CONFIG;
+	if ($CONFIG['debug']) error_log(sprintf('DEBUG: rrd_file_search(rfp=[%s],ddir=[%s],host=[%s],plugin=[%s],type=[%s],cat=[%s],pi=[%s],ti=[%s])', 
+	$return_full_path,
+	$datadir,
+	$host,
+	$plugin,
+	$type,
+	$category,
+	$pinstance,
+	$tinstance
+	));
 	
 	# check for trailing slash on $datadir, remove it if found
 	if (substr($datadir,strlen($datadir) === '/')) $datadir = substr($datadir, 1, strlen($datadir)-1);
@@ -118,6 +129,7 @@ function collectd_plugindata($host, $plugin=NULL) {
 	if (!$files)
 		return false;
 	
+	if (($plugin == null) && ($CONFIG['debug'])) error_log(sprintf('DEBUG: $files=[%s]', serialize($files)));
 	if ((strpos($plugin, 'snmp') !== FALSE) && ($CONFIG['debug'])) error_log(sprintf('DEBUG: $files=[%s]', serialize($files)));
 
 	$data = array();
