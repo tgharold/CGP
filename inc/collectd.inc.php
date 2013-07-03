@@ -55,14 +55,14 @@ function rrd_file_search(
 	) {
 	global $CONFIG;
 	if ($CONFIG['debug']) error_log(sprintf('DEBUG: rrd_file_search(rfp=[%s],ddir=[%s],host=[%s],plugin=[%s],type=[%s],cat=[%s],pi=[%s],ti=[%s])', 
-	$return_full_path ? 'true' : 'false',
-	$datadir,
-	$host,
-	$plugin,
-	$type,
-	$category,
-	$pinstance,
-	$tinstance
+		$return_full_path ? 'true' : 'false',
+		$datadir,
+		$host,
+		$plugin,
+		$type,
+		$category,
+		$pinstance,
+		$tinstance
 	));
 	
 	# check for trailing slash on $datadir, remove it if found
@@ -99,12 +99,12 @@ function rrd_file_search(
 			);
 			$path_prefix_len = strlen($datadir . '/' . $host . '/');
 			break;
-		
+			
 		# Handles most other plugins
 		# /(datadir)/(host)/(plugin)[-(category)][-(pinstance)]/(type)[-tinstance]*.rrd
 		# category, pinstance, and tinstance are optional
 		default:
-			$file_glob = sprintf('%s/%s/%s%s%s%s%s/%s%s%s%srrd',
+			$file_glob = sprintf('%s/%s/%s%s%s%s%s*/%s%s%s%srrd',
 				$datadir,
 				$host, 
 				$plugin,
