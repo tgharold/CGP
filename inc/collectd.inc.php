@@ -32,7 +32,7 @@ function collectd_plugindata($host, $plugin=NULL) {
 	if (!$files)
 		return false;
 	
-	if ($CONFIG['debug']) error_log(sprintf('DEBUG: $files=[%s]', serialize($files)));
+	if ((strpos($item, 'snmp') !== FALSE) && ($CONFIG['debug'])) error_log(sprintf('DEBUG: $files=[%s]', serialize($files)));
 
 	$data = array();
 	foreach($files as $item) {
