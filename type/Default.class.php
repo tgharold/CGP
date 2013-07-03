@@ -259,6 +259,7 @@ class Type_Default {
 		
 		# is the source spread over multiple files?
 		if (is_array($this->files) && count($this->files)>1) {
+			if ($CONFIG['debug']) error_log(sprintf('$this->files=[%s]', serialize($this->files)));
 			# and must it be ordered?
 			if (is_array($this->order)) {
 				$this->tinstances = array_merge(array_intersect($this->order, $this->tinstances));
@@ -273,23 +274,26 @@ class Type_Default {
 				}
 			}
 			else {
+				if ($CONFIG['debug']) error_log(sprintf('$this->tinstances=[%s]', serialize($this->tinstances)));
 				$sources = $this->tinstances;
 			}
 		}
 		# or one file with multiple data_sources
 		else {
+			if ($CONFIG['debug']) error_log(sprintf('$this->files=[%s]', $this->files));
 			if(is_array($this->data_sources) && count($this->data_sources)==1 && in_array('value', $this->data_sources)) {
+				if ($CONFIG['debug']) error_log(sprintf('$this->tinstances=[%s]', serialize($this->tinstances)));
 				# use tinstances as sources
 				$sources = $this->tinstances;
 			} else {
 				# use data_sources as sources
+				if ($CONFIG['debug']) error_log(sprintf('$this->data_sources=[%s]', serialize($this->data_sources)));
 				$sources = $this->data_sources;
 			}
 		}
 		$this->parse_ds_names($sources);
 		
-		if ($CONFIG['debug']) error_log(sprintf('DEBUG: RETURN $sources array of size %d', count($sources)));
-		if ($CONFIG['debug']) error_log(sprintf('DEBUG: RETURN $sources=[%s]', $sources));
+		if ($CONFIG['debug']) error_log(sprintf('DEBUG: RETURN $sources=[%s]', serialize($sources)));
 		return $sources;
 	}
 
