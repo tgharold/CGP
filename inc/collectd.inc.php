@@ -130,7 +130,7 @@ function rrd_file_search(
 		}
 	}	
 	
-	if ($CONFIG['debug']) error_log(sprintf('DEBUG: RETURN LIST OF %s FILES', count($files)));
+	if ($CONFIG['debug']) error_log(sprintf('DEBUG: RETURN LIST OF %d FILES', count($files)));
 	return $files;
 }
 
@@ -141,7 +141,7 @@ function collectd_plugindata($host, $plugin=NULL) {
 
 	if (!is_dir($CONFIG['datadir'].'/'.$host))
 		return false;
-
+ 
 	chdir($CONFIG['datadir'].'/'.$host);
 	
 	# search for plugins for this host, and optionally a specific plugin

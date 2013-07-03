@@ -72,7 +72,7 @@ class Type_GenericIO extends Type_Default {
 			$i++;
 		}
 		
-		if ($CONFIG['debug']) error_log(sprintf('DEBUG: RETURN $rrdgraph array of size %n', count($rrdgraph)));
+		if ($CONFIG['debug']) error_log(sprintf('DEBUG: RETURN $rrdgraph array of size %d', count($rrdgraph)));
 		return $rrdgraph;
 	}
 }

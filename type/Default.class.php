@@ -254,6 +254,9 @@ class Type_Default {
 	}
 
 	function rrd_get_sources() {
+		global $CONFIG;
+		if ($CONFIG['debug']) error_log('DEBUG: rrd_get_sources()');
+		
 		# is the source spread over multiple files?
 		if (is_array($this->files) && count($this->files)>1) {
 			# and must it be ordered?
@@ -284,6 +287,9 @@ class Type_Default {
 			}
 		}
 		$this->parse_ds_names($sources);
+		
+		if ($CONFIG['debug']) error_log(sprintf('DEBUG: RETURN $sources array of size %d', count($sources)));
+		if ($CONFIG['debug']) error_log(sprintf('DEBUG: RETURN $sources=[%s]', $sources));
 		return $sources;
 	}
 
