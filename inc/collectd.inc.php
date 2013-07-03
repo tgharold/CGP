@@ -19,10 +19,22 @@ function collectd_hosts() {
 	return($dir);
 }
 
+function rrd_host_search() {
+	
+}
+
 /**
  * Builds the search string to find the RRD files and returns a list of filenames, including
- * the /datadir/ path.
+ * the /datadir/ path.  There are a few use cases:
  * 
+ * #1 - Searching for all RRD files.  All arguments will be NULL other then $datadir.
+ * 
+ * #2 - The process of searching for RRD files for a host, plugin, or type. The category, pinstance and
+ * tinstance arguments should be left off, and one or all of host / plugin / type should be set.  
+ * 
+ * #3 - Searching very specifically for files matching category/pinstance/tinstance.
+ * 
+ * @param boolean $return_full_path
  * @param string $datadir
  * @param string $host
  * @param string $plugin
@@ -57,13 +69,19 @@ function rrd_file_search(
 	if (substr($datadir,strlen($datadir) == '/')) $datadir = substr($datadir, 0, strlen($datadir)-1);
 	if ($CONFIG['debug']) error_log(sprintf('DEBUG: $datadir=[%s]', $datadir));
 		
-	# Optional arguments which are always found need to be set to wildcards
+	# If all arguments after $datadir are NULL, then we should just glob for all RRD files
+	if ((!strlen($host)) && (!strlen($plugin)) && (!strlen($type)) &&
+		(!strlen($category)) && (!strlen($pinstance)) && (!strlen($tinstance))) {
+		$files = glob($datadir . '/*/*.rrd');
+		if ($CONFIG['debug']) error_log(sprintf('DEBUG: RETURN LIST OF %s FILES', count($files)));
+		return $files;
+	}
+	
+	# Optional arguments which are always found need to be set to wildcards if not set
 	if (!strlen($host)) $host = '*';
 	if (!strlen($plugin)) $plugin = '*';
 	if (!strlen($type)) $type = '*';
 
-	
-	
 	# by customizing the file search by plugin type, we can avoid searching directories
 	# which are not interesting to this instance of the function
 	switch ($plugin) {
@@ -84,6 +102,7 @@ function rrd_file_search(
 		
 		# Handles most other plugins
 		# /(datadir)/(host)/(plugin)[-(category)][-(pinstance)]/(type)[-tinstance]*.rrd
+		# category, pinstance, and tinstance are optional
 		default:
 			$file_glob = sprintf('%s/%s/%s%s%s%s%s/%s%s%s%srrd',
 				$datadir,
