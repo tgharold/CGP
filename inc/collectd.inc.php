@@ -105,7 +105,9 @@ function rrd_file_search(
 	# Strip the /datadir/hostname/ off the front
 	if ($return_full_path == false) {
 		foreach ($files as $filename) {
+			if ($CONFIG['debug']) error_log(sprintf('DEBUG: $filename=[%s]', $filename));
 			$filename = substr($filename, $path_prefix_len);
+			if ($CONFIG['debug']) error_log(sprintf('DEBUG: $filename=[%s]', $filename));
 		}
 	}	
 	
