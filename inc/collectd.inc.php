@@ -21,7 +21,6 @@ function collectd_hosts() {
 
 # returns an array of plugins/pinstances/types/tinstances
 function collectd_plugindata($host, $plugin=NULL) {
-	global $CONFIG;
 	if ($CONFIG['debug']) error_log(sprintf('DEBUG: collectd_plugindata($host=[%s],$plugin=[%s])', $host, $plugin));
 	global $CONFIG;
 
@@ -33,7 +32,7 @@ function collectd_plugindata($host, $plugin=NULL) {
 	if (!$files)
 		return false;
 	
-	if ((strpos($item, 'snmp') !== FALSE) && ($CONFIG['debug'])) error_log(sprintf('DEBUG: $files=[%s]', serialize($files)));
+	if ($CONFIG['debug']) error_log(sprintf('DEBUG: $files=[%s]', serialize($files)));
 
 	$data = array();
 	foreach($files as $item) {
@@ -56,6 +55,7 @@ function collectd_plugindata($host, $plugin=NULL) {
 			't'  => $matches['t'],
 			'ti' => isset($matches['ti']) ? $matches['ti'] : '',
 		);
+
 		if ((strpos($item, 'snmp') !== FALSE) && ($CONFIG['debug'])) error_log(sprintf('DEBUG: $data=[%s]', serialize($data)));
 	}
 
