@@ -57,6 +57,7 @@ class Type_GenericIO extends Type_Default {
 		$label_format = $this->create_sprintf_label_padding_format($sources);
 		$i = 0;
 		foreach($sources as $source) {
+			if ($CONFIG['debug']) error_log(sprintf('$source=[%s]', $source));
 			$dsname = $this->ds_names[$source] != '' ? $this->ds_names[$source] : $source;
 			$rrdgraph[] = sprintf('\'LINE1:avg_%s%s#%s:%s\'', crc32hex($source), $i == 1 ? '_neg' : '', $this->colors[$source], sprintf($label_format, $this->rrd_escape($dsname)));
 			$rrdgraph[] = sprintf('\'GPRINT:min_%s:MIN:%s Min,\'', crc32hex($source), $this->rrd_format);
