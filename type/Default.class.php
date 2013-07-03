@@ -141,7 +141,6 @@ class Type_Default {
 	function get_filenames() {
 		
 		$files = rrd_file_search(
-			$this->datadir,
 				true,
 				$this->datadir,
 				$this->args['host'],
