@@ -103,9 +103,9 @@ function rrd_file_search(
 	$files = glob($file_glob);
 	
 	# Strip the /datadir/hostname/ off the front
-	if (!$return_full_path) {
+	if ($return_full_path == false) {
 		foreach ($files as $filename) {
-			$filename = substr($filename, $path_prefix_len + 1);
+			$filename = substr($filename, $path_prefix_len);
 		}
 	}	
 	
