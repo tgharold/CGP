@@ -259,13 +259,18 @@ class Type_Default {
 		
 		# is the source spread over multiple files?
 		if (is_array($this->files) && count($this->files)>1) {
+			if ($CONFIG['debug']) error_log('Handle as multiple files');
 			if ($CONFIG['debug']) error_log(sprintf('$this->files=[%s]', serialize($this->files)));
 			# and must it be ordered?
 			if (is_array($this->order)) {
+				if ($CONFIG['debug']) error_log('Sort $this->tinstances array using $this->order');
 				$this->tinstances = array_merge(array_intersect($this->order, $this->tinstances));
 			}
 			# use tinstances as sources
+			if ($CONFIG['debug']) error_log(sprintf('$this->tinstances=[%s]', serialize($this->tinstances)));
 			if(is_array($this->data_sources) && count($this->data_sources)>1) {
+				if ($CONFIG['debug']) error_log('Loop through tinstances, data_sources arrays');
+				if ($CONFIG['debug']) error_log(sprintf('$this->data_sources=[%s]', serialize($this->data_sources)));
 				$sources = array();
 				foreach($this->tinstances as $f) {
 					foreach($this->data_sources as $s) {
@@ -274,12 +279,13 @@ class Type_Default {
 				}
 			}
 			else {
-				if ($CONFIG['debug']) error_log(sprintf('$this->tinstances=[%s]', serialize($this->tinstances)));
+				if ($CONFIG['debug']) error_log('Just copy $this->tinstances array');
 				$sources = $this->tinstances;
 			}
 		}
 		# or one file with multiple data_sources
 		else {
+			if ($CONFIG['debug']) error_log('One file with multiple data sources inside');
 			if ($CONFIG['debug']) error_log(sprintf('$this->files=[%s]', $this->files));
 			if(is_array($this->data_sources) && count($this->data_sources)==1 && in_array('value', $this->data_sources)) {
 				if ($CONFIG['debug']) error_log(sprintf('$this->tinstances=[%s]', serialize($this->tinstances)));
@@ -291,6 +297,8 @@ class Type_Default {
 				$sources = $this->data_sources;
 			}
 		}
+		if ($CONFIG['debug']) error_log(sprintf('$sources=[%s]', serialize($sources)));
+		if ($CONFIG['debug']) error_log('Call $this->parse_ds_names($sources)');
 		$this->parse_ds_names($sources);
 		
 		if ($CONFIG['debug']) error_log(sprintf('DEBUG: RETURN $sources=[%s]', serialize($sources)));
