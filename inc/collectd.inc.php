@@ -38,6 +38,7 @@ function collectd_plugindata($host, $plugin=NULL) {
 	$data = array();
 	foreach($files as $item) {
 		if ((strpos($item, 'snmp') !== FALSE) && ($CONFIG['debug'])) error_log(sprintf('DEBUG: $item=[%s]', $item));
+
 		preg_match('`
 			(?P<p>[\w_]+)      # plugin
 			(?:(?<=varnish)(?:\-(?P<c>[\w]+)))? # category
