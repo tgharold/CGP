@@ -26,8 +26,9 @@ $CONFIG['overview_refresh'] = 5;
 #$CONFIG['overview_filter']['interface'] = array('ti' => 'eth0', 't' => 'if_octets');
 
 # default plugins time range
-$CONFIG['time_range']['default'] = 86400;
-$CONFIG['time_range']['uptime']  = 31536000;
+$CONFIG['time_range']['default'] = 86400; # 1 day
+$CONFIG['time_range']['uptime']  = 31536000; # 1 year
+$CONFIG['time_range']['df']  = 15759360; # 6 months
 
 # show load averages on overview page
 $CONFIG['showload'] = true;
