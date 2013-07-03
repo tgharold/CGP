@@ -70,19 +70,19 @@ function rrd_file_search(
 		case 'load':
 		case 'users':
 		case 'uptime':
-			$files = glob(sprintf('%s/%s/%s/%s.rrd',
+			$file_glob = sprintf('%s/%s/%s/%s.rrd',
 				$datadir,
 				$host, 
 				$plugin,
 				$plugin
-			));
+			);
 			$path_prefix_len = strlen($datadir . '/' . $host . '/');
 			break;
 		
 		# Handles most other plugins
 		# /(datadir)/(host)/(plugin)[-(category)][-(pinstance)]/(type)[-tinstance]*.rrd
 		default:
-			$files = glob(sprintf('%s/%s/%s%s%s%s%s/%s%s%s%srrd',
+			$file_glob = sprintf('%s/%s/%s%s%s%s%s/%s%s%s%srrd',
 				$datadir,
 				$host, 
 				$plugin,
@@ -94,9 +94,12 @@ function rrd_file_search(
 				strlen($tinstance) ? '-' : '', 
 				$tinstance,
 				strlen($tinstance) ? '.' : '[-.]*'
-			));
+			);
 			$path_prefix_len = strlen($datadir . '/' . $host . '/');
 	}
+	
+	if ($CONFIG['debug']) error_log(sprintf('DEBUG: glob([%s])', $file_glob));
+	$files = glob($file_glob);
 	
 	# Strip the /datadir/hostname/ off the front
 	if (!$return_full_path) {
@@ -105,6 +108,7 @@ function rrd_file_search(
 		}
 	}	
 	
+	if ($CONFIG['debug']) error_log(sprintf('DEBUG: RETURN $files=[%s]', serialize($files)));
 	return $files;
 }
 
