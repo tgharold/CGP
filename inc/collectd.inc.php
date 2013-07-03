@@ -43,7 +43,7 @@ function rrd_file_search(
 	) {
 	global $CONFIG;
 	if ($CONFIG['debug']) error_log(sprintf('DEBUG: rrd_file_search(rfp=[%s],ddir=[%s],host=[%s],plugin=[%s],type=[%s],cat=[%s],pi=[%s],ti=[%s])', 
-	$return_full_path,
+	$return_full_path ? 'true' : 'false',
 	$datadir,
 	$host,
 	$plugin,
@@ -54,7 +54,8 @@ function rrd_file_search(
 	));
 	
 	# check for trailing slash on $datadir, remove it if found
-	if (substr($datadir,strlen($datadir) === '/')) $datadir = substr($datadir, 1, strlen($datadir)-1);
+	if (substr($datadir,strlen($datadir) == '/')) $datadir = substr($datadir, 1, strlen($datadir)-1);
+	if ($CONFIG['debug']) error_log(sprintf('DEBUG: $datadir=[%s]', $datadir));
 		
 	# Optional arguments which are always found need to be set to wildcards
 	if (!strlen($host)) $host = '*';
