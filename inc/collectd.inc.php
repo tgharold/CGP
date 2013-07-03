@@ -33,11 +33,11 @@ function collectd_plugindata($host, $plugin=NULL) {
 	if (!$files)
 		return false;
 	
-	if ($CONFIG['debug']) error_log(sprintf('DEBUG: $files=[%s]', serialize($files)));
+	if ((strpos($item, 'snmp') !== FALSE) && ($CONFIG['debug'])) error_log(sprintf('DEBUG: $files=[%s]', serialize($files)));
 
 	$data = array();
 	foreach($files as $item) {
-		if ($CONFIG['debug']) error_log(sprintf('DEBUG: $item=[%s]', $item));
+		if ((strpos($item, 'snmp') !== FALSE) && ($CONFIG['debug'])) error_log(sprintf('DEBUG: $item=[%s]', $item));
 		preg_match('`
 			(?P<p>[\w_]+)      # plugin
 			(?:(?<=varnish)(?:\-(?P<c>[\w]+)))? # category
@@ -55,7 +55,7 @@ function collectd_plugindata($host, $plugin=NULL) {
 			't'  => $matches['t'],
 			'ti' => isset($matches['ti']) ? $matches['ti'] : '',
 		);
-		if ($CONFIG['debug']) error_log(sprintf('DEBUG: $data=[%s]', serialize($data)));
+		if ((strpos($item, 'snmp') !== FALSE) && ($CONFIG['debug'])) error_log(sprintf('DEBUG: $data=[%s]', serialize($data)));
 	}
 
 	# only return data about one plugin
@@ -68,7 +68,7 @@ function collectd_plugindata($host, $plugin=NULL) {
 		$data = $pdata;		
 	}
 
-	if ($CONFIG['debug']) error_log(sprintf('DEBUG: RETURNED $data=[%s]', serialize($data)));
+	if ((strpos($item, 'snmp') !== FALSE) && ($CONFIG['debug'])) error_log(sprintf('DEBUG: RETURNED $data=[%s]', serialize($data)));
 	return($data);
 }
 
