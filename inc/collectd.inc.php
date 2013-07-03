@@ -77,15 +77,8 @@ function collectd_plugindata($host, $plugin=NULL) {
 				# SNMP RRD filenames can have optional InstancePrefix
 				# /(datadir)/(host)/snmp/(type)- 
 				# /(datadir)/(host)/snmp/(type)-(instanceprefix)-
-				preg_match('`
-					(?P<p>[\w_]+)      # plugin
-					(?:(?<=varnish)(?:\-(?P<c>[\w]+)))? # category
-					(?:\-(?P<pi>.+))?  # plugin instance
-					/
-					(?P<t>[\w_]+)      # type
-					(?:\-(?P<ti>.+))?  # type instance
-					\.rrd
-				`x', $filename, $matches);
+				preg_match('#([\w_]+)(?:\-(.+))?/([\w_]+)(?:\-(.+))?\.rrd#', 
+					$filename, $matches);
 				
 			default:
 				preg_match('`
