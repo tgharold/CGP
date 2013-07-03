@@ -43,6 +43,7 @@ class Type_GenericIO extends Type_Default {
 
 		$i = 0;
 		foreach($sources as $source) {
+			if ($CONFIG['debug']) error_log(sprintf('$source=[%s]', $source));
 			$rrdgraph[] = sprintf('\'AREA:avg_%s%s#%s\'', crc32hex($source), $i == 1 ? '_neg' : '', $this->get_faded_color($this->colors[$source]));
 			$i++;
 		}
