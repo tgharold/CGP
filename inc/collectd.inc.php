@@ -155,7 +155,6 @@ function collectd_plugindata($host, $plugin=NULL) {
 	if (!$files)
 		return false;
 	
-	if (($plugin == null) && ($CONFIG['debug'])) error_log(sprintf('DEBUG: $files=[%s]', serialize($files)));
 	if ((strpos($plugin, 'snmp') !== FALSE) && ($CONFIG['debug'])) error_log(sprintf('DEBUG: $files=[%s]', serialize($files)));
 
 	$data = array();
