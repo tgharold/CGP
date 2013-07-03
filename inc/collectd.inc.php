@@ -42,6 +42,9 @@ function rrd_file_search(
 		$tinstance = NULL
 	) {
 	
+	# check for trailing slash on $datadir, remove it if found
+	if (substr($datadir,strlen($datadir) === '/')) $datadir = substr($datadir, 1, strlen($datadir)-1);
+		
 	# Optional arguments which are always found need to be set to wildcards
 	if (!strlen($host)) $host = '*';
 	if (!strlen($plugin)) $plugin = '*';
