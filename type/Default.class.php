@@ -143,6 +143,7 @@ class Type_Default {
 		$files = rrd_file_search(
 			$this->datadir,
 				true,
+				$this->datadir,
 				$this->args['host'],
 				$this->args['plugin'],
 				$this->args['type'],

@@ -61,6 +61,8 @@ function rrd_file_search(
 	if (!strlen($host)) $host = '*';
 	if (!strlen($plugin)) $plugin = '*';
 	if (!strlen($type)) $type = '*';
+
+	
 	
 	# by customizing the file search by plugin type, we can avoid searching directories
 	# which are not interesting to this instance of the function
