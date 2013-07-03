@@ -65,14 +65,28 @@ function collectd_plugindata($host, $plugin=NULL) {
 	if (!$files)
 		return false;
 	
-	if ((strpos($item, 'snmp') !== FALSE) && ($CONFIG['debug'])) error_log(sprintf('DEBUG: $files=[%s]', serialize($files)));
+	if ((strpos($plugin, 'snmp') !== FALSE) && ($CONFIG['debug'])) error_log(sprintf('DEBUG: $files=[%s]', serialize($files)));
 
 	$data = array();
-	foreach($files as $item) {
-		if ((strpos($item, 'snmp') !== FALSE) && ($CONFIG['debug'])) error_log(sprintf('DEBUG: $item=[%s]', $item));
+	foreach($files as $filename) {
+		if ((strpos($filename, 'snmp') !== FALSE) && ($CONFIG['debug'])) error_log(sprintf('DEBUG: $filename=[%s]', $filename));
 		
 		switch ($plugin) {
 			
+			case 'snmp':
+				# SNMP RRD filenames can have optional InstancePrefix
+				# /(datadir)/(host)/snmp/(type)- 
+				# /(datadir)/(host)/snmp/(type)-(instanceprefix)-
+				preg_match('`
+					(?P<p>[\w_]+)      # plugin
+					(?:(?<=varnish)(?:\-(?P<c>[\w]+)))? # category
+					(?:\-(?P<pi>.+))?  # plugin instance
+					/
+					(?P<t>[\w_]+)      # type
+					(?:\-(?P<ti>.+))?  # type instance
+					\.rrd
+				`x', $filename, $matches);
+				
 			default:
 				preg_match('`
 					(?P<p>[\w_]+)      # plugin
@@ -82,7 +96,7 @@ function collectd_plugindata($host, $plugin=NULL) {
 					(?P<t>[\w_]+)      # type
 					(?:\-(?P<ti>.+))?  # type instance
 					\.rrd
-				`x', $item, $matches);
+				`x', $filename, $matches);
 		}
 
 		$data[] = array(
@@ -93,7 +107,7 @@ function collectd_plugindata($host, $plugin=NULL) {
 			'ti' => isset($matches['ti']) ? $matches['ti'] : '',
 		);
 
-		if ((strpos($item, 'snmp') !== FALSE) && ($CONFIG['debug'])) error_log(sprintf('DEBUG: $data=[%s]', serialize($data)));
+		if ((strpos($filename, 'snmp') !== FALSE) && ($CONFIG['debug'])) error_log(sprintf('DEBUG: $data=[%s]', serialize($data)));
 	}
 
 	# only return data about one plugin
@@ -106,7 +120,7 @@ function collectd_plugindata($host, $plugin=NULL) {
 		$data = $pdata;		
 	}
 
-	if ((strpos($item, 'snmp') !== FALSE) && ($CONFIG['debug'])) error_log(sprintf('DEBUG: RETURNED $data=[%s]', serialize($data)));
+	if ((strpos($plugin, 'snmp') !== FALSE) && ($CONFIG['debug'])) error_log(sprintf('DEBUG: RETURNED $data=[%s]', serialize($data)));
 	return($data);
 }
 
