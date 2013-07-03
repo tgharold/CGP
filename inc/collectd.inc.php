@@ -21,8 +21,8 @@ function collectd_hosts() {
 
 # returns an array of plugins/pinstances/types/tinstances
 function collectd_plugindata($host, $plugin=NULL) {
-	if ($CONFIG['debug']) error_log(sprintf('DEBUG: collectd_plugindata($host=[%s],$plugin=[%s])', $host, $plugin));
 	global $CONFIG;
+	if ($CONFIG['debug']) error_log(sprintf('DEBUG: collectd_plugindata($host=[%s],$plugin=[%s])', $host, $plugin));
 
 	if (!is_dir($CONFIG['datadir'].'/'.$host))
 		return false;
