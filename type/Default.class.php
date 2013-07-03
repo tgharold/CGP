@@ -286,7 +286,7 @@ class Type_Default {
 		# or one file with multiple data_sources
 		else {
 			if ($CONFIG['debug']) error_log('One file with multiple data sources inside');
-			if ($CONFIG['debug']) error_log(sprintf('$this->files=[%s]', $this->files));
+			if ($CONFIG['debug']) error_log(sprintf('$this->files=[%s]', serialize($this->files)));
 			if(is_array($this->data_sources) && count($this->data_sources)==1 && in_array('value', $this->data_sources)) {
 				if ($CONFIG['debug']) error_log(sprintf('$this->tinstances=[%s]', serialize($this->tinstances)));
 				# use tinstances as sources
