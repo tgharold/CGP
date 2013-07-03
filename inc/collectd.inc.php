@@ -19,6 +19,81 @@ function collectd_hosts() {
 	return($dir);
 }
 
+/**
+ * Builds the search string to find the RRD files and returns a list of filenames, including
+ * the /datadir/ path.
+ * 
+ * @param string $datadir
+ * @param string $host
+ * @param string $plugin
+ * @param string $type
+ * @param string $category
+ * @param string $pinstance
+ * @param string $tinstance
+ */
+function rrd_file_search(
+		$return_full_path,
+		$datadir, 
+		$host = NULL, 
+		$plugin = NULL, 
+		$type = NULL, 
+		$category = NULL, 
+		$pinstance = NULL, 
+		$tinstance = NULL
+	) {
+	
+	# Optional arguments which are always found need to be set to wildcards
+	if (!strlen($host)) $host = '*';
+	if (!strlen($plugin)) $plugin = '*';
+	if (!strlen($type)) $type = '*';
+	
+	# by customizing the file search by plugin type, we can avoid searching directories
+	# which are not interesting to this instance of the function
+	switch ($plugin) {
+		
+		# Simple plugins, always a single RRD file named after the plugin
+		# /(datadir)/(host)/(plugin)/(plugin).rrd
+		case 'load':
+		case 'users':
+		case 'uptime':
+			$files = glob(printf('%s/%s/%s/%s.rrd',
+				$datadir,
+				$host, 
+				$plugin,
+				$plugin
+			));
+			$path_prefix_len = strlen($datadir . '/' . $host . '/');
+			break;
+		
+		# Handles most other plugins
+		# /(datadir)/(host)/(plugin)[-(category)][-(pinstance)]/(type)[-tinstance]*.rrd
+		default:
+			$files = glob(printf('%s/%s/%s%s%s%s%s/%s%s%s%srrd',
+				$datadir,
+				$host, 
+				$plugin,
+				strlen($category) ? '-' : '',
+				$category,
+				strlen($pinstance) ? '-' : '',
+				$pinstance,
+				$type,
+				strlen($tinstance) ? '-' : '', 
+				$tinstance,
+				strlen($tinstance) ? '.' : '[-.]*'
+			));
+			$path_prefix_len = strlen($datadir . '/' . $host . '/');
+	}
+	
+	# Strip the /datadir/hostname/ off the front
+	if (!$return_full_path) {
+		foreach ($files as $filename) {
+			$filename = substr($filename, $path_prefix_len + 1);
+		}
+	}	
+	
+	return $files;
+}
+
 # returns an array of plugins/pinstances/types/tinstances
 function collectd_plugindata($host, $plugin=NULL) {
 	global $CONFIG;
@@ -29,38 +104,13 @@ function collectd_plugindata($host, $plugin=NULL) {
 
 	chdir($CONFIG['datadir'].'/'.$host);
 	
-	# by customizing the file search by plugin type, we can avoid searching directories
-	# which are not interesting to this instance of the function
-	switch ($plugin) {
-		
-		# plugins where the directory structure is /datadir/(host)/(plugin)
-		case 'ipmi':
-		case 'load':
-		case 'memory':
-		case 'ntpd':
-		case 'snmp':
-		case 'swap':
-		case 'uptime':
-		case 'users':
-		case 'vmem':
-			$files = glob(printf('%s/*.rrd'), $plugin);
-		
-		# plugins where the directory structure is /datadir/(host)/(plugin)-(pinstance)
-		case 'aggregation':
-		case 'bind':
-		case 'cpu':
-		case 'df':
-		case 'disk':
-		case 'interface':
-		case 'processes':
-		case 'sensors':
-		case 'tail':
-			$files = glob(printf('%s*/*.rrd'), $plugin);
-
-		# all other plugins search everything
-		default:
-			$files = glob("*/*.rrd");
-	}
+	# search for plugins for this host, and optionally a specific plugin
+	$files = rrd_file_search(
+			false,
+			$CONFIG['datadir'],
+			$host,
+			$plugin
+		);
 	
 	if (!$files)
 		return false;
@@ -74,10 +124,20 @@ function collectd_plugindata($host, $plugin=NULL) {
 		switch ($plugin) {
 			
 			case 'snmp':
-				# SNMP RRD filenames can have optional InstancePrefix
-				# /(datadir)/(host)/snmp/(type)- 
+				# SNMP RRD filenames can have optional InstancePrefix, which should be used as pi= value
+				# /(datadir)/(host)/snmp/(type)-
 				# /(datadir)/(host)/snmp/(type)-(instanceprefix)-
-				preg_match('#([\w_]+)(?:\-(.+))?/([\w_]+)(?:\-(.+))?\.rrd#', 
+				
+				# '#([\w_]+)(?:\-(.+))?/([\w_]+)(?:\-(.+))?\.rrd#',
+				preg_match('`
+					(?P<p>[\w_]+)      # plugin
+					(?:\-(?P<c>[\w]+)) # category
+					(?:\-(?P<pi>.+))?  # plugin instance
+					/
+					(?P<t>[\w_]+)      # type
+					(?:\-(?P<ti>.+))?  # type instance
+					\.rrd
+					`x',
 					$filename, $matches);
 				
 			default:

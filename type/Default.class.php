@@ -139,19 +139,18 @@ class Type_Default {
 	}
 
 	function get_filenames() {
-		$identifier = sprintf('%s/%s%s%s%s%s/%s%s%s',
-			$this->args['host'],
-			$this->args['plugin'],
-			strlen($this->args['category']) ? '-' : '', $this->args['category'],
-			strlen($this->args['pinstance']) ? '-' : '', $this->args['pinstance'],
-			$this->args['type'],
-			strlen($this->args['tinstance']) ? '-' : '', $this->args['tinstance']
-		);
-
-		$wildcard = strlen($this->args['tinstance']) ? '.' : '[-.]*';
-
-		$files = glob($this->datadir .'/'. $identifier . $wildcard . 'rrd');
-
+		
+		$files = rrd_file_search(
+			$this->datadir,
+				true,
+				$this->args['host'],
+				$this->args['plugin'],
+				$this->args['type'],
+				$this->args['category'],
+				$this->args['pinstance'],
+				$this->args['tinstance']
+			);
+		
 		return $files;
 	}
 
