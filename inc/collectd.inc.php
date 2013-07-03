@@ -120,7 +120,7 @@ function rrd_file_search(
 			$path_prefix_len = strlen($datadir . '/' . $host . '/');
 	}
 	
-	if ($CONFIG['debug']) error_log(sprintf('DEBUG: glob([%s])', $file_glob));
+	if ($CONFIG['debug']) error_log(sprintf('DEBUG: FILE SEARCH glob([%s])', $file_glob));
 	$files = glob($file_glob);
 	
 	# Strip the /datadir/hostname/ off the front
@@ -130,7 +130,7 @@ function rrd_file_search(
 		}
 	}	
 	
-	if ($CONFIG['debug']) error_log(sprintf('DEBUG: RETURN $files=[%s]', serialize($files)));
+	if ($CONFIG['debug']) error_log(sprintf('DEBUG: RETURN LIST OF %s FILES', count($files)));
 	return $files;
 }
 
