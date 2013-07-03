@@ -5,6 +5,9 @@ require_once 'Default.class.php';
 class Type_GenericIO extends Type_Default {
 	
 	function rrd_gen_graph() {
+		global $CONFIG;
+		if ($CONFIG['debug']) error_log('function rrd_gen_graph()');
+		
 		$rrdgraph = $this->rrd_options();
 
 		$sources = $this->rrd_get_sources();
@@ -69,6 +72,7 @@ class Type_GenericIO extends Type_Default {
 			$i++;
 		}
 		
+		if ($CONFIG['debug']) error_log(sprintf('DEBUG: RETURN $rrdgraph array of size %n', count($rrdgraph)));
 		return $rrdgraph;
 	}
 }
